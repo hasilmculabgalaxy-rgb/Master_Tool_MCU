@@ -1,20 +1,3 @@
-
-
-Ah, saya mengerti kesalahannya. Sepertinya Anda tidak sengaja menyalin teks penjelasan saya sebelum blok kode.
-
-File Python (`.py`) hanya dapat dijalankan jika isinya adalah kode Python murni. Teks seperti "Tentu, saya telah merapikan..." akan menyebabkan `SyntaxError` karena bukan merupakan sintaks yang valid dalam Python.
-
-**Solusinya:**
-
-Silakan hapus semua konten di file `master_app.py` Anda saat ini, lalu salin dan tempel **hanya kode yang ada di dalam blok di bawah ini**. Pastikan tidak ada teks lain sebelum baris pertama `# master_app.py`.
-
----
-
-```python
-# master_app.py
-# Aplikasi Master App - Professional Tools Suite
-# Aplikasi serbaguna berbasis Streamlit untuk berbagai keperluan dokumen dan utilitas.
-
 import streamlit as st
 import os
 import io
@@ -1107,3 +1090,4 @@ elif selected_page in ["📄 PDF Tools", "🖼️ Image Tools", "📊 MCU Tools"
 st.markdown("---")
 st.markdown('<div class="footer">© 2025 Master App - Professional Tools Suite | Dikembangkan dengan ❤️ menggunakan Streamlit</div>', unsafe_allow_html=True)
 ```
+
