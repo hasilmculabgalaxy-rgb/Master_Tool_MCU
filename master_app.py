@@ -1,3 +1,5 @@
+
+
 # master_app.py
 import streamlit as st
 import os
@@ -61,7 +63,7 @@ import qrcode
 
 # ----------------- KONFIGURASI DASAR APLIKASI & CSS -----------------
 st.set_page_config(
-    page_title="Master App – Tools MCU & QR", 
+    page_title="Master App – Professional Tools Suite", 
     page_icon="🧰", 
     layout="wide", 
     initial_sidebar_state="expanded"
@@ -71,26 +73,46 @@ st.markdown("""
 <style>
 /* General Styling */
 .stApp {
-    background-color: #f9fafb;
-    font-family: "Inter", sans-serif;
+    background-color: #f8f9fa;
+    font-family: "Segoe UI", "Roboto", sans-serif;
 }
 .main-header {
     text-align: center;
-    padding: 1rem 0;
-    color: #1b4f72;
+    padding: 1.5rem 0;
+    color: #1a3a5f;
+    border-bottom: 2px solid #e1e5eb;
+    margin-bottom: 2rem;
 }
 
 /* Sidebar Styling */
 [data-testid="stSidebar"] {
     background-color: #ffffff;
     border-right: 1px solid #e5e7eb;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.05);
 }
 .sidebar-title {
-    font-size: 1.5rem;
+    font-size: 1.6rem;
     font-weight: 700;
-    color: #111827;
+    color: #1a3a5f;
     text-align: center;
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background: linear-gradient(90deg, #f8f9fa, #e9ecef);
+    border-radius: 8px;
+}
+.sidebar-section {
+    margin-bottom: 1.5rem;
+    padding: 0.5rem;
+    border-radius: 8px;
+    background-color: #f8f9fa;
+}
+.sidebar-section-title {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 /* Card Styling */
@@ -98,40 +120,76 @@ st.markdown("""
     background: white;
     border-radius: 12px;
     padding: 1.5rem;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
-    margin-bottom: 1rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    margin-bottom: 1.5rem;
     border: 1px solid #e5e7eb;
-    transition: all 0.2s ease-in-out;
+    transition: all 0.3s ease-in-out;
 }
 .feature-card:hover {
-    box-shadow: 0 8px 15px rgba(0,0,0,0.12);
-    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+    transform: translateY(-3px);
+}
+.feature-card h3 {
+    color: #1a3a5f;
+    margin-top: 0;
+    font-size: 1.2rem;
+}
+.feature-card p {
+    color: #6c757d;
+    margin-bottom: 0;
 }
 
 /* Button Styling */
 div.stButton > button {
-    background: linear-gradient(90deg, #5dade2, #3498db);
+    background: linear-gradient(90deg, #1a3a5f, #2c5282);
     color: white;
     border: none;
     border-radius: 8px;
-    padding: 0.5rem 1rem;
+    padding: 0.6rem 1.2rem;
     font-weight: 600;
-    transition: 0.2s;
+    transition: all 0.2s;
     cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 div.stButton > button:hover {
-    background: linear-gradient(90deg, #3498db, #2e86c1);
+    background: linear-gradient(90deg, #2c5282, #1a3a5f);
     transform: scale(1.02);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+/* Tab Styling */
+.stTabs [data-baseweb="tab-list"] {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 0.5rem;
+}
+.stTabs [data-baseweb="tab"] {
+    border-radius: 6px;
+    padding: 0.5rem 1rem;
+    font-weight: 500;
 }
 
 /* Footer */
 .footer {
     text-align: center;
-    color: #9ca3af;
+    color: #6c757d;
     font-size: 0.9rem;
-    margin-top: 2rem;
-    padding-top: 1rem;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
     border-top: 1px solid #e5e7eb;
+}
+
+/* Status Messages */
+.stAlert {
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 1rem 0;
+}
+
+/* Data Display */
+.stDataFrame {
+    border-radius: 8px;
+    overflow: hidden;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -181,6 +239,19 @@ def rotate_page_safe(page, angle):
             page.__setitem__(NameObject("/Rotate"), NumberObject(angle))
         except Exception:
             pass
+
+def display_success_message(message: str):
+    """Menampilkan pesan sukses dengan styling yang konsisten."""
+    st.success(message)
+    st.balloons()
+
+def display_info_message(message: str):
+    """Menampilkan pesan informasi dengan styling yang konsisten."""
+    st.info(message)
+
+def display_warning_message(message: str):
+    """Menampilkan pesan peringatan dengan styling yang konsisten."""
+    st.warning(message)
 
 # ----------------- LOGIKA QR CODE GENERATOR -----------------
 def show_qr_generator_page():
@@ -301,7 +372,7 @@ END:VEVENT"""
     
     if st.button("🚀 Buat QR Code", type="primary"):
         if not data:
-            st.warning("⚠️ Silakan lengkapi data QR Code terlebih dahulu!")
+            display_warning_message("⚠️ Silakan lengkapi data QR Code terlebih dahulu!")
         else:
             try:
                 qr = qrcode.QRCode(version=1, error_correction=qrcode.constants.ERROR_CORRECT_H, box_size=box_size, border=border)
@@ -331,6 +402,7 @@ END:VEVENT"""
                 st.session_state.qr_history.append({'image': buf.getvalue(), 'data': data, 'type': qr_type, 'timestamp': datetime.now()})
                 
                 st.download_button("📥 Download PNG", data=buf, file_name=f"qrcode_{datetime.now().strftime('%Y%m%d_%H%M%S')}.png", mime="image/png")
+                display_success_message("QR Code berhasil dibuat!")
             except Exception as e:
                 st.error(f"Gagal membuat QR Code: {e}")
 
@@ -354,7 +426,7 @@ def _show_batch_qr_generator():
                         qr.add_data(str(row[data_col]))
                         qr.make(fit=True)
                         qr_img = qr.make_image(fill_color="black", back_color="white")
-                        img_buffer = BytesIO()
+                        img_buffer = io.BytesIO()
                         qr_img.save(img_buffer, format="PNG")
                         img_buffer.seek(0)
                         filename = f"{prefix}{row[name_col] if name_col else i+1}.png"
@@ -362,7 +434,7 @@ def _show_batch_qr_generator():
                         progress.progress((i + 1) / len(df))
                 zip_buffer.seek(0)
                 st.download_button("📥 Download All QR Codes (ZIP)", data=zip_buffer.getvalue(), file_name=f"batch_qr_{datetime.now().strftime('%Y%m%d_%H%M%S')}.zip", mime="application/zip")
-                st.success(f"✅ Berhasil generate {len(df)} QR codes!")
+                display_success_message(f"✅ Berhasil generate {len(df)} QR codes!")
         except UnicodeDecodeError:
             st.error("Error: Tidak dapat membaca file. Pastikan file CSV/CSV disimpan dengan encoding UTF-8. Coba buka kembali file di Excel dan simpan sebagai 'CSV UTF-8'.")
         except Exception as e:
@@ -383,12 +455,12 @@ def _show_qr_templates():
             st.session_state.template_data = data
             st.rerun()
     if 'template_data' in st.session_state:
-        st.info(f"Data template '{st.session_state.template_data}' siap digunakan. Pindah ke tab 'Single QR' untuk membuatnya.")
+        display_info_message(f"Data template '{st.session_state.template_data}' siap digunakan. Pindah ke tab 'Single QR' untuk membuatnya.")
 
 def _show_qr_history():
     st.subheader("📜 Riwayat QR Code")
     if not st.session_state.qr_history:
-        st.info("Belum ada riwayat QR Code.")
+        display_info_message("Belum ada riwayat QR Code.")
         return
     for i, item in enumerate(reversed(st.session_state.qr_history)):
         with st.expander(f"📅 {item['timestamp'].strftime('%Y-%m-%d %H:%M')} - {item['type']}"):
@@ -431,7 +503,7 @@ def _show_pdf_tools_page():
                 output = io.BytesIO()
                 writer.write(output)
                 st.download_button("Unduh Hasil", data=output.getvalue(), file_name="merged.pdf", mime="application/pdf")
-                st.success("PDF berhasil digabung.")
+                display_success_message("PDF berhasil digabung.")
             except Exception as e: show_error_trace(e)
 
     elif tool_select == "Pisah PDF":
@@ -449,7 +521,7 @@ def _show_pdf_tools_page():
                     out_map[f"page_{i+1}.pdf"] = buf.getvalue()
                 zipb = make_zip_from_map(out_map)
                 st.download_button("Download pages.zip", zipb, file_name="pages.zip", mime="application/zip")
-                st.success("PDF berhasil dipisah.")
+                display_success_message("PDF berhasil dipisah.")
             except Exception as e: show_error_trace(e)
     
     elif tool_select == "Reorder/Hapus Halaman":
@@ -461,7 +533,7 @@ def _show_pdf_tools_page():
                 if PdfReader is None: st.error("PyPDF2 tidak terinstall."); st.stop()
                 reader = PdfReader(io.BytesIO(raw))
                 num_pages = len(reader.pages)
-                st.info(f"PDF berhasil dimuat. Jumlah total halaman: **{num_pages}**.")
+                display_info_message(f"PDF berhasil dimuat. Jumlah total halaman: **{num_pages}**.")
                 default_order = ", ".join(map(str, range(1, num_pages + 1)))
                 new_order_str = st.text_input(f"Masukkan urutan halaman baru (1-{num_pages}) dipisahkan koma:", value=default_order)
                 if st.button("Proses Reorder/Hapus Halaman", key="process_reorder"):
@@ -478,7 +550,7 @@ def _show_pdf_tools_page():
                         writer.write(pdf_buffer)
                         pdf_buffer.seek(0)
                         st.download_button("Unduh Hasil PDF (Reordered)", data=pdf_buffer, file_name="pdf_reordered.pdf", mime="application/pdf")
-                        st.success(f"Pemrosesan selesai. Total halaman baru: {len(new_order_indices)}.")
+                        display_success_message(f"Pemrosesan selesai. Total halaman baru: {len(new_order_indices)}.")
                     except Exception as e:
                         st.error(f"Format urutan halaman tidak valid atau terjadi kesalahan: {e}")
             except Exception as e:
@@ -499,7 +571,7 @@ def _show_pdf_tools_page():
                         for i, file in enumerate(uploaded_files, start_num):
                             new_filename = f"{new_prefix}_{i:03d}.pdf"
                             zf.writestr(new_filename, file.read())
-                    st.success(f"Berhasil mengganti nama {len(uploaded_files)} file.")
+                    display_success_message(f"Berhasil mengganti nama {len(uploaded_files)} file.")
                     st.download_button("Unduh File ZIP Hasil Rename", data=output_zip.getvalue(), file_name="pdf_renamed.zip", mime="application/zip")
                 except Exception as e: show_error_trace(e)
 
@@ -524,7 +596,7 @@ def _show_pdf_tools_page():
                 if out_map:
                     zipb = make_zip_from_map(out_map)
                     st.download_button("Unduh Hasil (ZIP)", zipb, file_name="pdf_renamed.zip", mime="application/zip")
-                    st.success(f"{len(out_map)} file berhasil diganti namanya.")
+                    display_success_message(f"{len(out_map)} file berhasil diganti namanya.")
                 if not_found: st.warning(f"{len(not_found)} file tidak ditemukan: {not_found[:5]}")
             except UnicodeDecodeError:
                 st.error("Error: Tidak dapat membaca file Excel/CSV. Pastikan file disimpan dengan encoding UTF-8. Coba buka kembali file di Excel dan simpan sebagai 'CSV UTF-8' atau 'Workbook'.")
@@ -544,12 +616,12 @@ def _show_pdf_tools_page():
                         pil[0].save(buf, save_all=True, append_images=pil[1:], format="PDF")
                     buf.seek(0)
                 st.download_button("Download images_as_pdf.pdf", buf.getvalue(), file_name="images_as_pdf.pdf", mime="application/pdf")
-                st.success("Konversi berhasil.")
+                display_success_message("Konversi berhasil.")
             except Exception as e: show_error_trace(e)
 
     elif tool_select == "PDF -> Image":
         st.markdown("#### PDF ke Gambar (PNG/JPEG)")
-        st.info("Memerlukan library `pdf2image` + `poppler` (server).")
+        display_info_message("Memerlukan library `pdf2image` + `poppler` (server).")
         f = st.file_uploader("Upload PDF", type="pdf")
         if f and st.button("Convert to images"):
             try:
@@ -563,7 +635,7 @@ def _show_pdf_tools_page():
                         b = io.BytesIO(); img.save(b, format="PNG"); out_map[f"page_{i+1}.png"] = b.getvalue()
                     zipb = make_zip_from_map(out_map)
                     st.download_button("Download images.zip", zipb, file_name="pdf_images.zip", mime="application/zip")
-                    st.success("Konversi berhasil.")
+                    display_success_message("Konversi berhasil.")
             except Exception as e: show_error_trace(e)
 
     elif tool_select == "Ekstrak Teks/Tabel":
@@ -586,12 +658,12 @@ def _show_pdf_tools_page():
                     full = "\n".join(text_blocks)
                     st.text_area("Extracted text (preview)", full[:10000], height=300)
                     st.download_button("Download .txt", full, file_name="extracted_text.txt", mime="text/plain")
-                    st.success("Ekstraksi berhasil.")
+                    display_success_message("Ekstraksi berhasil.")
             except Exception as e: show_error_trace(e)
 
     elif tool_select == "Terjemahan PDF":
         st.markdown("#### Terjemahan Teks PDF ke Word")
-        st.info("Fitur ini mencoba membuat hasil Word lebih rapi. **Replikasi tata letak kolom/tabel PDF tetap terbatas.**")
+        display_info_message("Fitur ini mencoba membuat hasil Word lebih rapi. **Replikasi tata letak kolom/tabel PDF tetap terbatas.**")
         if Translator is None or Document is None:
             if Translator is None: st.error("Library `deep-translator` tidak ditemukan.")
             if Document is None: st.error("Library `python-docx` tidak ditemukan.")
@@ -619,7 +691,7 @@ def _show_pdf_tools_page():
                             all_text_lines.append("---HALAMAN BARU---")
                     full_text_clean = "\n\n".join(p for p in all_text_lines if p != "---HALAMAN BARU---" and p != "")
                 if not full_text_clean.strip():
-                    st.warning("Teks kosong atau tidak dapat diekstrak dari PDF."); st.stop()
+                    display_warning_message("Teks kosong atau tidak dapat diekstrak dari PDF."); st.stop()
                 with st.spinner(f"2. Menerjemahkan teks ke {target_lang}..."):
                     translator = Translator(source=src_lang, target=target_lang)
                     CHUNK_SIZE = 4500
@@ -664,7 +736,7 @@ def _show_pdf_tools_page():
                     out = io.BytesIO()
                     doc.save(out)
                     out.seek(0)
-                st.success("Terjemahan berhasil! Unduh file Word hasil terjemahan.")
+                display_success_message("Terjemahan berhasil! Unduh file Word hasil terjemahan.")
                 st.download_button(f"Unduh Hasil Terjemahan ({target_lang}).docx", data=out.getvalue(), file_name=f"translated_to_{target_lang}_rapi.docx", mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document")
             except Exception as e:
                 st.error(f"Terjadi kesalahan saat terjemahan. Cek kode bahasa dan pastikan teks dapat diekstrak. Error: {e}")
@@ -685,7 +757,7 @@ def _show_pdf_tools_page():
                     try_encrypt(writer, pw)
                     buf = io.BytesIO(); writer.write(buf); buf.seek(0)
                 st.download_button("Download encrypted.pdf", buf.getvalue(), file_name="encrypted.pdf", mime="application/pdf")
-                st.success("PDF berhasil dienkripsi.")
+                display_success_message("PDF berhasil dienkripsi.")
             except Exception as e: show_error_trace(e)
 
 
@@ -710,7 +782,7 @@ def _show_image_tools_page():
             if out_map:
                 zipb = make_zip_from_map(out_map)
                 st.download_button("Unduh Hasil (ZIP)", zipb, file_name="foto_kompres.zip", mime="application/zip")
-                st.success("Kompresi selesai.")
+                display_success_message("Kompresi selesai.")
 
     elif img_tool == "Batch Rename Gambar (Sequential)":
         uploaded_files = st.file_uploader("Unggah file Gambar (JPG, PNG, dll.):", type=["jpg", "jpeg", "png", "webp"], accept_multiple_files=True, key="batch_rename_uploader")
@@ -744,13 +816,13 @@ def _show_image_tools_page():
                                 img.save(img_io, format=output_format_pil)
                             img_io.seek(0)
                             zf.writestr(new_filename, img_io.read())
-                    st.success(f"Berhasil memproses {len(uploaded_files)} file.")
+                    display_success_message(f"Berhasil memproses {len(uploaded_files)} file.")
                     st.download_button("Unduh File ZIP Hasil Batch", data=output_zip.getvalue(), file_name="hasil_batch_gambar.zip", mime="application/zip")
                 except Exception as e: show_error_trace(e)
 
     elif img_tool == "Batch Rename Gambar (Excel)":
         st.markdown("#### Ganti Nama Gambar (PNG/JPEG) Berdasarkan Excel")
-        st.info("Template Excel/CSV wajib memiliki kolom **`nama_lama`** dan **`nama_baru`**.")
+        display_info_message("Template Excel/CSV wajib memiliki kolom **`nama_lama`** dan **`nama_baru`**.")
         excel_up = st.file_uploader("Unggah Excel/CSV untuk daftar nama:", type=["xlsx", "csv"], key="rename_img_excel_up")
         files = st.file_uploader("Unggah Gambar (JPG/PNG/JPEG, multiple):", type=["jpg", "jpeg", "png"], accept_multiple_files=True, key="rename_img_files_up")
         if excel_up and files and st.button("Proses Ganti Nama Gambar (ZIP)", key="process_img_rename_excel"):
@@ -776,9 +848,9 @@ def _show_image_tools_page():
                 if out_map:
                     zipb = make_zip_from_map(out_map)
                     st.download_button("Unduh Hasil (ZIP)", zipb, file_name="gambar_renamed_by_excel.zip", mime="application/zip")
-                    st.success(f"{len(out_map)} file berhasil diganti namanya.")
+                    display_success_message(f"{len(out_map)} file berhasil diganti namanya.")
                 if not_found:
-                    st.info(f"{len(not_found)} file 'nama_lama' di Excel tidak ditemukan. Contoh: {not_found[:5]}")
+                    display_info_message(f"{len(not_found)} file 'nama_lama' di Excel tidak ditemukan. Contoh: {not_found[:5]}")
             except UnicodeDecodeError:
                 st.error("Error: Tidak dapat membaca file Excel/CSV. Pastikan file disimpan dengan encoding UTF-8. Coba buka kembali file di Excel dan simpan sebagai 'CSV UTF-8' atau 'Workbook'.")
             except Exception as e: show_error_trace(e)
@@ -786,7 +858,7 @@ def _show_image_tools_page():
 
 def _show_mcu_tools_page():
     st.header("📊 MCU Tools")
-    st.warning("Fitur ini membutuhkan template Excel/PDF khusus untuk analisis. Pastikan format input data Anda sesuai.")
+    display_warning_message("Fitur ini membutuhkan template Excel/PDF khusus untuk analisis. Pastikan format input data Anda sesuai.")
     mcu_tool = st.selectbox("Pilih Fitur MCU", ["Dashboard Analisis Data MCU", "Organise by Excel"], index=0)
     
     if mcu_tool == "Dashboard Analisis Data MCU":
@@ -797,7 +869,7 @@ def _show_mcu_tools_page():
                 # PERBAIKAN: Menambahkan penanganan error untuk file Excel/CSV
                 with st.spinner("Membaca data dan normalisasi kolom..."):
                     df = pd.read_csv(io.BytesIO(uploaded_file.read())) if uploaded_file.name.lower().endswith('.csv') else pd.read_excel(io.BytesIO(uploaded_file.read()))
-                    st.success(f"Data berhasil dimuat. Total Baris: {len(df)}")
+                    display_success_message(f"Data berhasil dimuat. Total Baris: {len(df)}")
                     df.columns = df.columns.str.replace('[^A-Za-z0-9_]+', '', regex=True).str.lower()
                 st.markdown("#### Preview Data (5 Baris Teratas)")
                 st.dataframe(df.head(), use_container_width=True)
@@ -819,16 +891,16 @@ def _show_mcu_tools_page():
                         excel_bytes = df_to_excel_bytes(status_counts)
                         st.download_button("Unduh Data Agregasi Status (Excel)", data=excel_bytes, file_name="status_agregat.xlsx", mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
                     else:
-                        st.info("Kolom status/hasil tidak memiliki data unik yang valid.")
+                        display_info_message("Kolom status/hasil tidak memiliki data unik yang valid.")
                 else:
-                    st.warning("Kolom yang mengandung kata 'status', 'fit', atau 'hasil' tidak ditemukan.")
+                    display_warning_message("Kolom yang mengandung kata 'status', 'fit', atau 'hasil' tidak ditemukan.")
             except UnicodeDecodeError:
                 st.error("Error: Tidak dapat membaca file Excel/CSV. Pastikan file disimpan dengan encoding UTF-8. Coba buka kembali file di Excel dan simpan sebagai 'CSV UTF-8' atau 'Workbook'.")
             except Exception as e: show_error_trace(e)
 
     elif mcu_tool == "Organise by Excel":
         st.subheader("Organise by Excel (Original Logic)")
-        st.info("Fitur ini akan membuat struktur folder di dalam file ZIP berdasarkan data Excel dan nama file PDF yang diunggah.")
+        display_info_message("Fitur ini akan membuat struktur folder di dalam file ZIP berdasarkan data Excel dan nama file PDF yang diunggah.")
         excel_up = st.file_uploader("Upload Excel (No_MCU, Nama, Departemen, JABATAN) or (filename,target_folder)", type=["xlsx","csv"], key="mcu_organize_excel")
         pdfs = st.file_uploader("Upload PDF files (multiple)", type="pdf", accept_multiple_files=True, key="mcu_organize_pdf")
         if excel_up and pdfs and st.button("Process MCU"):
@@ -839,7 +911,7 @@ def _show_mcu_tools_page():
                     pdf_map = {p.name: p.read() for p in pdfs}
                     out_map, not_found = {}, []
                     if all(c in df.columns for c in ["No_MCU","Nama","Departemen","JABATAN"]):
-                        st.info("Mode: Organisasi berdasarkan kolom **No_MCU, Departemen, JABATAN**.")
+                        display_info_message("Mode: Organisasi berdasarkan kolom **No_MCU, Departemen, JABATAN**.")
                         for _, r in df.iterrows():
                             no = str(r["No_MCU"]).strip()
                             dept = str(r["Departemen"]).strip().replace('/', '_').replace('\\', '_') if not pd.isna(r["Departemen"]) else "Unknown_Dept"
@@ -850,7 +922,7 @@ def _show_mcu_tools_page():
                             else:
                                 not_found.append(no)
                     elif "filename" in df.columns and "target_folder" in df.columns:
-                        st.info("Mode: Organisasi berdasarkan kolom **filename** dan **target_folder**.")
+                        display_info_message("Mode: Organisasi berdasarkan kolom **filename** dan **target_folder**.")
                         for _, r in df.iterrows():
                             fn = str(r["filename"]).strip()
                             tgt = str(r["target_folder"]).strip().replace('/', '_').replace('\\', '_')
@@ -863,9 +935,9 @@ def _show_mcu_tools_page():
                 if out_map:
                     zipb = make_zip_from_map(out_map)
                     st.download_button("Download MCU zip", zipb, file_name="mcu_structured.zip", mime="application/zip")
-                    st.success(f"{len(out_map)} file berhasil diproses.")
+                    display_success_message(f"{len(out_map)} file berhasil diproses.")
                 if not_found:
-                    st.warning(f"{len(not_found)} ID/File tidak ditemukan. Contoh: {not_found[:10]}")
+                    display_warning_message(f"{len(not_found)} ID/File tidak ditemukan. Contoh: {not_found[:10]}")
             except UnicodeDecodeError:
                 st.error("Error: Tidak dapat membaca file Excel/CSV. Pastikan file disimpan dengan encoding UTF-8. Coba buka kembali file di Excel dan simpan sebagai 'CSV UTF-8' atau 'Workbook'.")
             except Exception as e: show_error_trace(e)
@@ -883,7 +955,7 @@ def _show_file_tools_page():
                     out_map = {f.name: f.read() for f in files}
                     zipb = make_zip_from_map(out_map)
                     st.download_button("Unduh ZIP", zipb, file_name="compressed_files.zip", mime="application/zip")
-                    st.success("Kompresi selesai.")
+                    display_success_message("Kompresi selesai.")
                 except Exception as e: show_error_trace(e)
         elif mode == "Extract from ZIP":
             f = st.file_uploader("Unggah File ZIP", type=["zip"])
@@ -896,9 +968,9 @@ def _show_file_tools_page():
                             extracted_files[name] = z.read(name)
                     if extracted_files:
                         st.download_button("Unduh Hasil Ekstraksi (ZIP)", make_zip_from_map(extracted_files), file_name="extracted_content.zip", mime="application/zip")
-                        st.info(f"{len(extracted_files)} file berhasil diekstrak.")
+                        display_info_message(f"{len(extracted_files)} file berhasil diekstrak.")
                     else:
-                        st.warning("File ZIP kosong.")
+                        display_warning_message("File ZIP kosong.")
                 except Exception as e: show_error_trace(e)
     elif file_tool == "Konversi Dasar ke Excel":
         st.subheader("Konversi Data ke Excel")
@@ -918,7 +990,7 @@ def _show_file_tools_page():
                     if st.button("Konversi ke Excel"):
                         excel_bytes = df_to_excel_bytes(df)
                         st.download_button("Unduh Excel", excel_bytes, file_name="converted_file.xlsx", mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-                        st.success("Konversi berhasil.")
+                        display_success_message("Konversi berhasil.")
             except UnicodeDecodeError:
                 st.error("Error: Tidak dapat membaca file. Pastikan file (khususnya CSV/TXT) disimpan dengan encoding UTF-8. Coba buka kembali file di editor teks dan simpan dengan encoding UTF-8.")
             except Exception as e: show_error_trace(e)
@@ -926,7 +998,7 @@ def _show_file_tools_page():
 def _show_about_page():
     st.header("ℹ️ Tentang Aplikasi")
     st.markdown("""
-    **Master App – Tools** adalah aplikasi serbaguna berbasis Streamlit untuk membantu:
+    **Master App – Professional Tools Suite** adalah aplikasi serbaguna berbasis Streamlit untuk membantu:
     -  **QR Code Generator Pro**: Membuat berbagai jenis QR.
     -  **Pengolahan Dokumen PDF** (gabung, pisah, proteksi, ekstraksi, Reorder/Hapus Halaman, Batch Rename, Terjemahan)
     -  **Analisis & Pengolahan Hasil MCU** (Dashboard Analisis Data, Organise by Excel)
@@ -942,33 +1014,77 @@ def _show_about_page():
     - `pandas` & `openpyxl` untuk Analisis MCU dan Batch Rename: `pip install pandas openpyxl`
     - `qrcode[pil]` untuk generator QR: `pip install qrcode[pil]`
     """)
-    st.info("Data diproses di server tempat Streamlit dijalankan. Untuk mengaktifkan semua fitur, pasang dependensi yang diperlukan.")
+    display_info_message("Data diproses di server tempat Streamlit dijalankan. Untuk mengaktifkan semua fitur, pasang dependensi yang diperlukan.")
 
 
 # ----------------- NAVIGASI UTAMA -----------------
 with st.sidebar:
     st.markdown('<div class="sidebar-title">🧰 Master App</div>', unsafe_allow_html=True)
+    
+    st.markdown('<div class="sidebar-section-title">Dashboard</div>', unsafe_allow_html=True)
+    st.markdown('<div class="sidebar-section">', unsafe_allow_html=True)
     page = st.selectbox(
-        "Pilih Kategori Tools:",
+        "",
         [
             "🏠 Dashboard",
-            "---",
+        ],
+        key="dashboard_select"
+    )
+    st.markdown('</div>', unsafe_allow_html=True)
+    
+    st.markdown('<div class="sidebar-section-title">QR Code Tools</div>', unsafe_allow_html=True)
+    st.markdown('<div class="sidebar-section">', unsafe_allow_html=True)
+    qr_page = st.selectbox(
+        "",
+        [
             "📱 QR Code Generator Pro",
-            "---",
+        ],
+        key="qr_select"
+    )
+    st.markdown('</div>', unsafe_allow_html=True)
+    
+    st.markdown('<div class="sidebar-section-title">Document Tools</div>', unsafe_allow_html=True)
+    st.markdown('<div class="sidebar-section">', unsafe_allow_html=True)
+    doc_page = st.selectbox(
+        "",
+        [
             "📄 PDF Tools",
             "🖼️ Image Tools",
             "📊 MCU Tools",
             "🗂️ File Tools",
-            "---",
-            "ℹ️ Tentang Aplikasi"
-        ]
+        ],
+        key="doc_select"
     )
+    st.markdown('</div>', unsafe_allow_html=True)
+    
+    st.markdown('<div class="sidebar-section-title">About</div>', unsafe_allow_html=True)
+    st.markdown('<div class="sidebar-section">', unsafe_allow_html=True)
+    about_page = st.selectbox(
+        "",
+        [
+            "ℹ️ Tentang Aplikasi"
+        ],
+        key="about_select"
+    )
+    st.markdown('</div>', unsafe_allow_html=True)
+    
+    # Determine which page to show
+    if page == "🏠 Dashboard":
+        selected_page = page
+    elif qr_page == "📱 QR Code Generator Pro":
+        selected_page = qr_page
+    elif doc_page in ["📄 PDF Tools", "🖼️ Image Tools", "📊 MCU Tools", "🗂️ File Tools"]:
+        selected_page = doc_page
+    elif about_page == "ℹ️ Tentang Aplikasi":
+        selected_page = about_page
+    else:
+        selected_page = "🏠 Dashboard"
 
 # ----------------- KONTEN UTAMA -----------------
-st.markdown('<div class="main-header"><h1>Selamat Datang di Master App</h1></div>', unsafe_allow_html=True)
+st.markdown('<div class="main-header"><h1>Selamat Datang di Master App - Professional Tools Suite</h1></div>', unsafe_allow_html=True)
 st.markdown("---")
 
-if page == "🏠 Dashboard":
+if selected_page == "🏠 Dashboard":
     st.header("🏠 Dashboard")
     st.markdown("Pilih fitur yang ingin Anda gunakan dari menu di sidebar.")
     col1, col2 = st.columns(2)
@@ -982,17 +1098,17 @@ if page == "🏠 Dashboard":
     with col2:
         st.markdown("""
         <div class="feature-card">
-            <h3>📄 KAY App - Document Tools</h3>
+            <h3>📄 Document Tools</h3>
             <p>Alat lengkap untuk pengolahan dokumen, PDF, gambar, dan analisis data MCU.</p>
         </div>
         """, unsafe_allow_html=True)
 
-elif page == "📱 QR Code Generator Pro":
+elif selected_page == "📱 QR Code Generator Pro":
     show_qr_generator_page()
 
-elif page in ["📄 PDF Tools", "🖼️ Image Tools", "📊 MCU Tools", "🗂️ File Tools", "ℹ️ Tentang Aplikasi"]:
-    show_kay_tools_page(page)
+elif selected_page in ["📄 PDF Tools", "🖼️ Image Tools", "📊 MCU Tools", "🗂️ File Tools", "ℹ️ Tentang Aplikasi"]:
+    show_kay_tools_page(selected_page)
 
 # ----------------- FOOTER -----------------
 st.markdown("---")
-st.markdown('<div class="footer">Developed by AR - 2025 | Dibuat dengan ❤️ menggunakan Streamlit</div>', unsafe_allow_html=True)
+st.markdown('<div class="footer">© 2025 Master App - Professional Tools Suite</div>', unsafe_allow_html=True)
