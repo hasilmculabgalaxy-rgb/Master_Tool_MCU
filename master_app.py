@@ -1089,5 +1089,4 @@ elif selected_page in ["📄 PDF Tools", "🖼️ Image Tools", "📊 MCU Tools"
 # ----------------- FOOTER -----------------
 st.markdown("---")
 st.markdown('<div class="footer">© 2025 Master App - Professional Tools Suite | Dikembangkan dengan ❤️ menggunakan Streamlit</div>', unsafe_allow_html=True)
-```
 
