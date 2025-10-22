@@ -1,0 +1,12 @@
+streamlit
+pandas
+openpyxl
+Pillow
+PyPDF2
+pdfplumber
+python-docx
+deep-translator
+# Optional (Jika Anda ingin fitur PDF -> Image/Preview Image bekerja):
+pdf2image
+# Jika Anda menggunakan library lain di kemudian hari, tambahkan di sini.
+qrcode[pil]
